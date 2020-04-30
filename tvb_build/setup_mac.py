@@ -94,7 +94,6 @@ PY2APP_OPTIONS = {'iconfile': 'tvb_build/icon.icns',
                   'resources': [],
                   'excludes': PY2APP_EXCLUDES,
                   'argv_emulation': True,
-                  'semi_standalone': True,
                   'strip': True,  # TRUE is the default
                   'optimize': '0'}
 
