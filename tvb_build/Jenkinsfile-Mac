@@ -22,9 +22,10 @@ pipeline {
                 unstash 'step1'
                 sh '''#!/bin/bash
                     cd tvb_build
-                    bash create_mac_env.sh
+                    bash mac_conda_env.sh
                     cd ..
-                    python3 tvb_build/setup_mac.py py2app
+                    source activate mac-distribution
+                    python tvb_build/setup_mac.py py2app
                 '''
                 archiveArtifacts artifacts: 'TVB_Mac*.zip'
             }
