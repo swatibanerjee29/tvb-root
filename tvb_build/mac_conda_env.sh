@@ -14,6 +14,7 @@ conda install -y --name mac-distribution -c conda-forge jupyterlab flask gevent
 /WORK/anaconda3/anaconda3/envs/mac-distribution/bin/pip install --upgrade distribute
 # Add an empty __init__.py in conda_env/python3.7/site-packages/PyObjCTools/ folder or else py2app won't be able to process this module
 echo "" > /WORK/anaconda3/anaconda3/envs/mac-distribution/lib/python3.7/site-packages/PyObjCTools/__init__.py
+ln -s /WORK/anaconda3/anaconda3/envs/mac-distribution/lib/libpython3.7m.dylib /WORK/anaconda3/anaconda3/envs/mac-distribution/lib/libpython3.7.dylib
 
 # Install TVB
 cd ../framework_tvb
