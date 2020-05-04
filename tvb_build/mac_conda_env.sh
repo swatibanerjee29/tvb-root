@@ -5,7 +5,7 @@ conda create -y --name mac-distribution python=3 nomkl numba scipy numpy network
 conda install -y --name mac-distribution pytest pytest-cov pytest-benchmark pytest-mock matplotlib-base
 conda install -y --name mac-distribution psycopg2 pytables scikit-image==0.14.2 simplejson cherrypy docutils werkzeug==0.16.1
 conda install -y --name mac-distribution -c conda-forge jupyterlab flask gevent
-source activate mac-distribution
+conda activate mac-distribution
 pip install --upgrade pip
 pip install h5py>=2.10 formencode cfflib jinja2 nibabel sqlalchemy==1.1.14 sqlalchemy-migrate==0.11.0 allensdk
 pip install tvb-gdist typing BeautifulSoup4 subprocess32 flask-restplus python-keycloak mako
