@@ -1,6 +1,7 @@
 #!/bin/bash
 
 #Install dependencies
+conda update -n base -c defaults conda
 conda create -y --name mac-distribution python=3.7 nomkl numba scipy numpy networkx scikit-learn cython pip numexpr psutil
 conda install -y --name mac-distribution pytest pytest-cov pytest-benchmark pytest-mock matplotlib-base
 conda install -y --name mac-distribution psycopg2 pytables scikit-image==0.14.2 simplejson cherrypy docutils werkzeug==0.16.1
