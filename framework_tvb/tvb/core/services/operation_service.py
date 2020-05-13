@@ -39,7 +39,6 @@ Module in charge with Launching an operation (creating the Operation entity as w
 
 import os
 import json
-import uuid
 import zipfile
 import sys
 from copy import copy
@@ -61,12 +60,12 @@ from tvb.core.entities.storage import dao
 from tvb.core.entities.transient.structure_entities import DataTypeMetaData
 from tvb.core.entities.file.files_helper import FilesHelper
 from tvb.core.neocom import h5
-from tvb.core.neotraits.h5 import ViewModelH5
 from tvb.core.services.burst_service import BurstService
 from tvb.core.services.project_service import ProjectService
-from tvb.core.services.backend_client import BACKEND_CLIENT
 from tvb.core.services.exceptions import OperationException
 from tvb.datatypes.time_series import TimeSeries
+from tvb.core.services.backend_client_factory import BackendClientFactory
+
 
 try:
     from cherrypy._cpreqbody import Part
@@ -347,7 +346,7 @@ class OperationService:
         """ Initiate operation on cluster"""
         for operation in operations:
             try:
-                BACKEND_CLIENT.execute(str(operation.id), current_username, adapter_instance)
+                BackendClientFactory.execute(str(operation.id), current_username, adapter_instance)
             except Exception as excep:
                 self._handle_exception(excep, {}, "Could not start operation!", operation)
 
@@ -546,7 +545,7 @@ class OperationService:
             for operation in operations_in_group:
                 result = OperationService.stop_operation(operation.id, False, remove_after_stop) or result
         else:
-            result = BACKEND_CLIENT.stop_operation(operation_id)
+            result = BackendClientFactory.stop_operation(operation_id)
             if remove_after_stop:
                 burst_config = dao.get_burst_for_operation_id(operation_id)
                 ProjectService().remove_operation(operation_id)
