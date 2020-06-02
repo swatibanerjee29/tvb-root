@@ -567,6 +567,12 @@ class Simulator(HasTraits):
             self._tic_ratio = 0.1
             self._tic_point = self._tic_ratio * n_steps
         end_step = init_step + n_steps
+
+        _t_NEST_integation = 0.0
+        _t_TVBtoNEST = 0.0
+        _t_NESTtoTVB = 0.0
+        _t = 0.0
+        tic_t = time.time()
         for step in range(init_step, end_step):
 
             # 1. Update spikeNet with TVB state t_(step-1)
@@ -579,10 +585,15 @@ class Simulator(HasTraits):
                 # in a model specific manner
                 # TODO: find what is the general treatment of local coupling, if any!
                 #  Is this addition correct in all cases for all builders?
+                tic = time.time()
                 self.tvb_spikeNet_interface.tvb_state_to_spikeNet(state, node_coupling + local_coupling, stimulus,
                                                                   self.model)
+                _t_TVBtoNEST += (time.time() - tic)
+
                 # Integrate Spiking Network to get the new Spiking Network state t_step
+                tic = time.time()
                 self.run_spiking_simulator(self.integrator.dt)
+                _t_NEST_integation += (time.time() - tic)
 
             # 2. Integrate TVB to get the new TVB state t_step
             state = self.integrator.scheme(state, self._dfun, node_coupling, local_coupling, stimulus)
@@ -596,7 +607,9 @@ class Simulator(HasTraits):
                 # Update the new TVB state variable with the new SpikeNet state,
                 # including any necessary conversions from SpikeNet variables to TVB state,
                 # in a model specific manner
+                tic = time.time()
                 state = self.tvb_spikeNet_interface.spikeNet_state_to_tvb_state(state)
+                _t_NESTtoTVB += (time.time() - tic)
                 # TODO: Deprecate this since we have introduced TVB non-state variables
                 # SpikeNet state t_(step)-> TVB model parameter at time t_(step)
                 # Couple the SpikeNet state to some TVB model parameter,
@@ -622,7 +635,12 @@ class Simulator(HasTraits):
                 yield output
             if self.PRINT_PROGRESSION_MESSAGE:
                 self._print_progression_message(step, n_steps)
-
+        _t = time.time() - tic_t
+        times = {"total": _t, "NEST": _t_NEST_integation, "TVBtoNEST": _t_TVBtoNEST, "NESTtoTVB": _t_NESTtoTVB}
+        print(times)
+        import json
+        with open('data.json', 'w') as fp:
+            json.dump(times, fp)
         self.current_state = state
         self.current_step = self.current_step + n_steps - 1  # -1 : don't repeat last point
 
