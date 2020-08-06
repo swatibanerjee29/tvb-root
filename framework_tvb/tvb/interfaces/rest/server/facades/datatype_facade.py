@@ -31,7 +31,7 @@ from tvb.core.adapters.abcadapter import ABCAdapter
 from tvb.core.entities.storage import dao
 from tvb.core.neocom.h5 import h5_file_for_index
 from tvb.core.services.algorithm_service import AlgorithmService
-from tvb.interfaces.rest.commons.dtos import AlgorithmDto
+from tvb.interfaces.rest.commons.dtos import AlgorithmDto, DataTypeDto
 
 
 class DatatypeFacade:
@@ -48,3 +48,11 @@ class DatatypeFacade:
         datatype = dao.get_datatype_by_gid(datatype_gid)
         _, filtered_adapters, _ = self.algorithm_service.get_launchable_algorithms_for_datatype(datatype, categories)
         return [AlgorithmDto(algorithm) for algorithm in filtered_adapters]
+
+    @staticmethod
+    def get_operation_result(datatype_gid):
+        data_type = dao.get_datatype_by_gid(datatype_gid)
+        if data_type is None:
+            return None
+
+        return DataTypeDto(data_type)
