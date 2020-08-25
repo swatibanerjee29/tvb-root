@@ -117,6 +117,9 @@ class DataType(HasTraitsIndex):
     def get_extra_info(self):
         pass
 
+    def get_lazy_load_field(self):
+        None
+
     def __init__(self, gid=None, **kwargs):
 
         # if gid is None:
